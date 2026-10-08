@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "pebble build",
-    "run": "pebble build && pebble install --emulator gabbro",
+    "start": "pebble build && pebble install --emulator gabbro",
     "debug": "pebble build --debug && pebble install --emulator gabbro"
   },
   "pebble": {
