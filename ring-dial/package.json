@@ -1,0 +1,32 @@
+{
+  "name": "ring-dial",
+  "author": "MakeAwesomeHappen",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "scripts":{
+    "build": "pebble build",
+    "start": "pebble build && pebble install --emulator gabbro",
+    "debug": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "ring-dial",
+    "uuid": "8d3be520-15a3-4922-a3a1-d9318f8af06c",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "dummy"
+    ],
+    "resources": {
+      "media": []
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "squares",
+  "author": "MakeAwesomeHappen",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "build": "pebble build",
+    "start": "pebble build && pebble install --emulator emery && pebble install --emulator gabbro",
+    "start:time": "pebble build && pebble install --emulator emery",
+    "start:round": "pebble build && pebble install --emulator gabbro",
+    "debug:time": "pebble build --debug && pebble install --emulator emery",
+    "debug:round": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "squares",
+    "uuid": "83f2255d-ccf6-4511-99c2-b7438a958668",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery",
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    }
+  }
+}

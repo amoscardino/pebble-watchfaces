@@ -1,0 +1,44 @@
+{
+  "name": "solar-dial",
+  "author": "Andrew Moscardino",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {
+    "@moddable/pebbleproxy": "^0.2.0",
+    "suncalc": "^2.1.0"
+  },
+  "scripts": {
+    "build": "pebble build",
+    "run": "pebble build && pebble install --emulator gabbro",
+    "debug": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "Solar Dial",
+    "uuid": "887c7661-1de9-4c6e-aec9-8d78b4d5acf5",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "gabbro"
+    ],
+    "capabilities": [
+      "location"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "LAT",
+      "LONG",
+      "NOW",
+      "SUNRISE",
+      "SUNSET"
+    ],
+    "resources": {
+      "media": []
+    }
+  }
+}

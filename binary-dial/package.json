@@ -1,0 +1,26 @@
+{
+  "name": "binary-dial",
+  "author": "MakeAwesomeHappen",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "scripts":{
+    "build": "pebble build",
+    "start": "pebble build && pebble install --emulator gabbro",
+    "debug": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "binary-dial",
+    "uuid": "d461dc6d-ea25-421f-86ad-4a507183eb74",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    }
+  }
+}
