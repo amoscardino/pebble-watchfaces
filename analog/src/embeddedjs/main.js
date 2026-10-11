@@ -17,6 +17,7 @@ const radius = render.width / 2;
 const minuteHandLength = radius * 0.75;
 const hourHandLength = radius * 0.5;
 const handThickness = 9;
+const handOffset = radius * 0.15;
 const centerRadius = (handThickness / 2) * 1.75;
 const centerBorder = 2;
 const fontHeight = 14;
@@ -53,7 +54,11 @@ const drawHourHand = (now) => {
   const x = centerX + Math.sin(angle) * hourHandLength;
   const y = centerY - Math.cos(angle) * hourHandLength;
 
-  render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
+  const centerXOffset = centerX + Math.sin(angle) * handOffset;
+  const centerYOffset = centerY - Math.cos(angle) * handOffset;
+
+  render.drawLine(centerX, centerY, x, y, colorForeground, notchThickness);
+  render.drawLine(centerXOffset, centerYOffset, x, y, colorForeground, handThickness);
 };
 
 const drawMinuteHand = (now) => {
@@ -61,7 +66,11 @@ const drawMinuteHand = (now) => {
   const x = centerX + Math.sin(angle) * minuteHandLength;
   const y = centerY - Math.cos(angle) * minuteHandLength;
 
-  render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
+  const centerXOffset = centerX + Math.sin(angle) * handOffset;
+  const centerYOffset = centerY - Math.cos(angle) * handOffset;
+
+  render.drawLine(centerX, centerY, x, y, colorForeground, notchThickness);
+  render.drawLine(centerXOffset, centerYOffset, x, y, colorForeground, handThickness);
 };
 
 const drawCenter = () => {
@@ -85,4 +94,4 @@ const draw = (evt) => {
   render.end();
 }
 
-watch.addEventListener('secondchange', draw);
+watch.addEventListener('minutechange', draw);
