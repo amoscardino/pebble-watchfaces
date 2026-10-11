@@ -1,0 +1,33 @@
+{
+  "name": "analog",
+  "author": "MakeAwesomeHappen",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "build": "pebble build",
+    "start": "pebble build && pebble install --emulator gabbro",
+    "debug": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "analog",
+    "uuid": "b9ac99ba-3a4e-4f71-9348-b6bdeeeda245",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery",
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "dummy"
+    ],
+    "resources": {
+      "media": []
+    }
+  }
+}
