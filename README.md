@@ -10,6 +10,7 @@ Experiments for now, may release some or all to the Pebble Appstore (eventually)
 - `ring-dial`
 - `solar-dial`
 - `squares`
+- `analog`
 
 ## Building
 
