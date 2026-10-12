@@ -4,10 +4,12 @@ let render = new Poco(screen);
 
 const black = render.makeColor(0, 0, 0);
 const white = render.makeColor(255, 255, 255);
+const red = render.makeColor(223, 0, 0);
 
 // let colorBackground, colorForeground;
 const colorBackground = white;
 const colorForeground = black;
+const colorAccent = red;
 
 const centerX = render.width / 2;
 const centerY = render.height / 2;
@@ -27,6 +29,13 @@ const centerBorder = 2;
 const dialNumberFontHeight = 14;
 const dialNumberFont = new render.Font("Gothic-Regular", dialNumberFontHeight);
 const dialNumberOffset = 10;
+const dateFontHeight = 18;
+const dateFont = new render.Font("Gothic-Bold", dateFontHeight);
+
+const getMonthString = (date) => {
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return monthNames[date.getMonth()];
+};
 
 const drawDial = () => {
   // Background
@@ -72,23 +81,37 @@ const drawMinuteHand = (now) => {
   render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
 };
 
-const drawCenter = () => {
-  render.drawCircle(colorForeground, centerX, centerY, centerRadius, 0, 360);
-  render.drawCircle(colorBackground, centerX, centerY, centerRadius - centerBorder, 0, 360);
+const drawDate = (now) => {
+  const dateStr = `${getMonthString(now)} ${now.getDate()}`;
+  const dateWidth = render.getTextWidth(dateStr, dateFont);
+  const x = centerX + (centerX / 2) - (dateWidth / 2);
+  const y = centerY - (dateFontHeight / 2);
+
+  render.fillRectangle(colorAccent, x, y, dateWidth, dateFontHeight);
+  render.drawCircle(colorAccent, x, y + dateFontHeight / 2, dateFontHeight / 2, 0, 360);
+  render.drawCircle(colorAccent, x + dateWidth, y + dateFontHeight / 2, dateFontHeight / 2, 0, 360);
+  render.drawText(dateStr, dateFont, colorBackground, x, y - 1);
+};
+
+const drawCenter = (now) => {
+  // Center is the AM/PM indicator
+  const inner = now.getHours() > 12 ? colorForeground : colorBackground;
+  const outer = now.getHours() > 12 ? colorBackground : colorForeground;
+
+  render.drawCircle(outer, centerX, centerY, centerRadius, 0, 360);
+  render.drawCircle(inner, centerX, centerY, centerRadius - centerBorder, 0, 360);
 };
 
 const draw = (evt) => {
   const now = evt?.date ?? new Date();
-
-  // colorBackground = now.getHours() >= 6 && now.getHours() < 18 ? white : black;
-  // colorForeground = now.getHours() >= 6 && now.getHours() < 18 ? black : white;
 
   render.begin();
 
   drawDial();
   drawHourHand(now);
   drawMinuteHand(now);
-  drawCenter();
+  drawDate(now);
+  drawCenter(now);
 
   render.end();
 }
