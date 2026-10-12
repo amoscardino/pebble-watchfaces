@@ -37,6 +37,42 @@ const getMonthString = (date) => {
   return monthNames[date.getMonth()];
 };
 
+const getHourAngle = (now) => ((now.getHours() % 12) + now.getMinutes() / 60) * (360 / 12) * rad;
+const getMinuteAngle = (now) => (now.getMinutes() + now.getSeconds() / 60) * (360 / 60) * rad;
+
+const getDatePosition = (dateWidth, dateFontHeight, hourAngle, minuteAngle) => {
+  // Position the date on the right side of the dial by default if neither hand is between 2 and 4 o'clock
+  // If that doesn't work, position to the left if neither hand is between 8 and 10 o'clock
+  // If that doesn't work, position to the bottom if neither hand is between 4 and 8 o'clock
+  // Finally, give up and position the date at the top of the dial
+  let x, y;
+
+  const isClear = (startDeg, endDeg) => {
+    const inRange = (angle) => angle > startDeg * rad && angle < endDeg * rad;
+    return !inRange(hourAngle) && !inRange(minuteAngle);
+  };
+
+  if (isClear(60, 120)) {
+    // Position to the right
+    x = centerX + (centerX / 2) - (dateWidth / 2);
+    y = centerY - (dateFontHeight / 2);
+  } else if (isClear(240, 300)) {
+    // Position to the left
+    x = centerX - (centerX / 2) - (dateWidth / 2);
+    y = centerY - (dateFontHeight / 2);
+  } else if (isClear(120, 240)) {
+    // Position to the bottom
+    x = centerX - (dateWidth / 2);
+    y = centerY + (centerY / 2) - (dateFontHeight / 2);
+  } else {
+    // Position to the top
+    x = centerX - (dateWidth / 2);
+    y = centerY - (centerY / 2) - (dateFontHeight / 2);
+  }
+
+  return { x, y };
+};
+
 const drawDial = () => {
   // Background
   render.fillRectangle(colorBackground, 0, 0, render.width, render.height);
@@ -65,27 +101,24 @@ const drawDial = () => {
   }
 };
 
-const drawHourHand = (now) => {
-  const angle = ((now.getHours() % 12) + now.getMinutes() / 60) * (360 / 12) * rad;
+const drawHourHand = (angle) => {
   const x = centerX + Math.sin(angle) * hourHandLength;
   const y = centerY - Math.cos(angle) * hourHandLength;
 
   render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
 };
 
-const drawMinuteHand = (now) => {
-  const angle = (now.getMinutes() + now.getSeconds() / 60) * (360 / 60) * rad;
+const drawMinuteHand = (angle) => {
   const x = centerX + Math.sin(angle) * minuteHandLength;
   const y = centerY - Math.cos(angle) * minuteHandLength;
 
   render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
 };
 
-const drawDate = (now) => {
+const drawDate = (now, hourAngle, minuteAngle) => {
   const dateStr = `${getMonthString(now)} ${now.getDate()}`;
   const dateWidth = render.getTextWidth(dateStr, dateFont);
-  const x = centerX + (centerX / 2) - (dateWidth / 2);
-  const y = centerY - (dateFontHeight / 2);
+  const { x, y } = getDatePosition(dateWidth, dateFontHeight, hourAngle, minuteAngle);
 
   render.fillRectangle(colorAccent, x, y, dateWidth, dateFontHeight);
   render.drawCircle(colorAccent, x, y + dateFontHeight / 2, dateFontHeight / 2, 0, 360);
@@ -95,8 +128,8 @@ const drawDate = (now) => {
 
 const drawCenter = (now) => {
   // Center is the AM/PM indicator
-  const inner = now.getHours() > 12 ? colorForeground : colorBackground;
-  const outer = now.getHours() > 12 ? colorBackground : colorForeground;
+  const inner = now.getHours() >= 12 ? colorForeground : colorBackground;
+  const outer = now.getHours() >= 12 ? colorBackground : colorForeground;
 
   render.drawCircle(outer, centerX, centerY, centerRadius, 0, 360);
   render.drawCircle(inner, centerX, centerY, centerRadius - centerBorder, 0, 360);
@@ -104,13 +137,15 @@ const drawCenter = (now) => {
 
 const draw = (evt) => {
   const now = evt?.date ?? new Date();
+  const hourAngle = getHourAngle(now);
+  const minuteAngle = getMinuteAngle(now);
 
   render.begin();
 
   drawDial();
-  drawHourHand(now);
-  drawMinuteHand(now);
-  drawDate(now);
+  drawHourHand(hourAngle);
+  drawMinuteHand(minuteAngle);
+  drawDate(now, hourAngle, minuteAngle);
   drawCenter(now);
 
   render.end();
