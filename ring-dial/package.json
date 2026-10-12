@@ -1,8 +1,7 @@
 {
   "name": "ring-dial",
-  "author": "MakeAwesomeHappen",
+  "author": "Andrew Moscardino",
   "version": "1.0.0",
-  "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "scripts":{
@@ -11,7 +10,7 @@
     "debug": "pebble build --debug && pebble install --emulator gabbro"
   },
   "pebble": {
-    "displayName": "ring-dial",
+    "displayName": "Ring Dial",
     "uuid": "8d3be520-15a3-4922-a3a1-d9318f8af06c",
     "projectType": "moddable",
     "sdkVersion": "3",
@@ -21,12 +20,6 @@
     ],
     "watchapp": {
       "watchface": true
-    },
-    "messageKeys": [
-      "dummy"
-    ],
-    "resources": {
-      "media": []
     }
   }
 }

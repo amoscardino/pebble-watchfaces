@@ -1,8 +1,7 @@
 {
   "name": "squares",
-  "author": "MakeAwesomeHappen",
+  "author": "Andrew Moscardino",
   "version": "1.0.0",
-  "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "scripts": {
@@ -14,7 +13,7 @@
     "debug:round": "pebble build --debug && pebble install --emulator gabbro"
   },
   "pebble": {
-    "displayName": "squares",
+    "displayName": "Squares",
     "uuid": "83f2255d-ccf6-4511-99c2-b7438a958668",
     "projectType": "moddable",
     "sdkVersion": "3",

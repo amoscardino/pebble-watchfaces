@@ -2,9 +2,6 @@
   "name": "solar-dial",
   "author": "Andrew Moscardino",
   "version": "1.0.0",
-  "keywords": [
-    "pebble-app"
-  ],
   "private": true,
   "dependencies": {
     "@moddable/pebbleproxy": "^0.2.0",
@@ -36,9 +33,6 @@
       "NOW",
       "SUNRISE",
       "SUNSET"
-    ],
-    "resources": {
-      "media": []
-    }
+    ]
   }
 }
