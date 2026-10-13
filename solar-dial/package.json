@@ -32,7 +32,8 @@
       "LONG",
       "NOW",
       "SUNRISE",
-      "SUNSET"
+      "SUNSET",
+      "NOON_ALTITUDE"
     ]
   }
 }

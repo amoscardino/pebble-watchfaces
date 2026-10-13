@@ -1,7 +1,7 @@
 import Poco from "commodetto/Poco";
 import { getMonthString, getDayString } from "./dates";
 import { rad, getSunAngle } from "./sunAngle";
-import { getDaylightArc } from "./sunTimes";
+import { getDaylightArc, getNoonAltitude } from "./sunTimes";
 
 const render = new Poco(screen);
 
@@ -27,7 +27,8 @@ const timeCircleRadius = render.getTextWidth("00:00", timeFont) / 2;
 const sunRadius = 10;
 const notchLength = 5;
 const notchThickness = 2;
-const sunOrbitRadius = radius - (sunRadius + (notchLength * 2) + 2);
+const horizonOrbitRadius = radius - (sunRadius + (notchLength * 2) + 2);
+const zenithOrbitRadius = (timeCircleRadius / 2) + sunRadius + 4;
 
 // Notches never move, so compute their endpoints once
 const notches = [];
@@ -58,7 +59,18 @@ const drawNotches = () => {
   }
 };
 
-const drawSun = (sunCos, sunSin) => {
+const getSunOrbitRadius = () => {
+  const noonAltitude = getNoonAltitude();
+
+  // Without a lookup yet (or with the sun never rising), keep it on the horizon orbit
+  if (noonAltitude === undefined || noonAltitude <= 0) {
+    return horizonOrbitRadius;
+  }
+
+  return horizonOrbitRadius - (horizonOrbitRadius - zenithOrbitRadius) * Math.min(noonAltitude, 90) / 90;
+};
+
+const drawSun = (sunOrbitRadius, sunCos, sunSin) => {
   const sunX = centerX + sunOrbitRadius * sunCos;
   const sunY = centerY + sunOrbitRadius * sunSin;
 
@@ -102,7 +114,7 @@ export const draw = (evt) => {
 
   drawBackground();
   drawNotches();
-  drawSun(sunCos, sunSin);
+  drawSun(getSunOrbitRadius(), sunCos, sunSin);
   drawTimeAndDate(now, sunCos, sunSin);
 
   render.end();

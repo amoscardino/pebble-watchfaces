@@ -19,6 +19,9 @@ const setCachedDegrees = (key, value) => {
 let sunriseDegrees = loadCachedNumber("sunriseDegrees", -90);
 let sunsetDegrees = loadCachedNumber("sunsetDegrees", 90);
 
+// The sun's altitude at solar noon in degrees; undefined until the first lookup
+let noonAltitude = loadCachedNumber("noonAltitude", undefined);
+
 let lookupDay = localStorage.getItem("lookupDay");
 let lookupLat = loadCachedNumber("lookupLat", NaN);
 let lookupLong = loadCachedNumber("lookupLong", NaN);
@@ -50,7 +53,7 @@ const sendSunRequest = (msg) => {
 };
 
 const message = new Message({
-  keys: ["LAT", "LONG", "NOW", "SUNRISE", "SUNSET"],
+  keys: ["LAT", "LONG", "NOW", "SUNRISE", "SUNSET", "NOON_ALTITUDE"],
   onReadable() {
     const msg = this.read();
 
@@ -63,6 +66,11 @@ const message = new Message({
 
     setCachedDegrees("sunriseDegrees", sunriseDegrees);
     setCachedDegrees("sunsetDegrees", sunsetDegrees);
+
+    if (msg.has("NOON_ALTITUDE")) {
+      noonAltitude = msg.get("NOON_ALTITUDE");
+      setCachedDegrees("noonAltitude", noonAltitude);
+    }
 
     if (sentSunRequest) {
       ({ lat: lookupLat, long: lookupLong, day: lookupDay } = sentSunRequest);
@@ -91,6 +99,11 @@ const message = new Message({
 export const getDaylightArc = () => ({ sunriseDegrees, sunsetDegrees });
 
 /**
+ * @returns The sun's altitude at solar noon in degrees, or undefined before the first lookup
+ */
+export const getNoonAltitude = () => noonAltitude;
+
+/**
  * @param {() => void} callback Called whenever new sunrise/sunset times arrive from the phone
  */
 export const onSunTimesChange = (callback) => {
@@ -104,7 +117,9 @@ export const requestSunTimes = (lat, long) => {
   const date = new Date();
   const day = date.toDateString();
 
-  const withinTolerance = day === lookupDay
+  // Always look up when there's no noon altitude yet (e.g. cached from before it was sent)
+  const withinTolerance = noonAltitude !== undefined
+    && day === lookupDay
     && Math.abs(lat - lookupLat) < positionTolerance
     && Math.abs(long - lookupLong) < positionTolerance;
 

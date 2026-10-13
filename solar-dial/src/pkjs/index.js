@@ -13,9 +13,13 @@ Pebble.addEventListener('appmessage', (event) => {
 
   const times = suncalc.getTimes(now, lat, long);
 
+  // suncalc 2.x reports altitude in degrees, already refraction-corrected
+  const noonAltitude = suncalc.getPosition(times.solarNoon, lat, long).altitude;
+
   // Use the proxy's queue so this doesn't collide with its own location/http traffic
   moddableProxy.sendAppMessage({
     SUNRISE: Math.floor(times.sunrise.getTime() / 1000),
-    SUNSET: Math.floor(times.sunset.getTime() / 1000)
+    SUNSET: Math.floor(times.sunset.getTime() / 1000),
+    NOON_ALTITUDE: Math.round(noonAltitude)
   });
 });
