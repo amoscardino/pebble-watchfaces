@@ -3,8 +3,9 @@ const suncalc = require("suncalc");
 
 Pebble.addEventListener('ready', moddableProxy.readyReceived);
 Pebble.addEventListener('appmessage', (event) => {
-  if (moddableProxy.appMessageReceived(event))
+  if (moddableProxy.appMessageReceived(event)) {
     return;
+  }
 
   const lat = parseFloat(event.payload.LAT);
   const long = parseFloat(event.payload.LONG);

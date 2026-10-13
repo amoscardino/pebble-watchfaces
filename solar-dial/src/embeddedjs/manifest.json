@@ -6,6 +6,10 @@
   "modules": {
     "*": [
       "./main",
+      "./dial",
+      "./sunTimes",
+      "./sunAngle",
+      "./location",
       "./dates"
     ]
   }
