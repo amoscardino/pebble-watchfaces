@@ -46,11 +46,22 @@ for (let i = 0, numberOfNotches = 24; i < numberOfNotches; i++) {
   });
 }
 
-const drawBackground = () => {
+const drawSky = (r, sunriseDegrees, sunsetDegrees) => {
+  render.drawCircle(black, centerX, centerY, r, 0, 360);
+  render.drawCircle(blue, centerX, centerY, r, sunriseDegrees, sunsetDegrees);
+};
+
+const drawBackground = (sunOrbitRadius) => {
   const { sunriseDegrees, sunsetDegrees } = getDaylightArc();
+  const orbitRadius = Math.round(sunOrbitRadius);
 
   render.fillRectangle(black, 0, 0, render.width, render.height);
   render.drawCircle(blue, centerX, centerY, backgroundRadius, sunriseDegrees, sunsetDegrees);
+
+  // Poco can only fill circles, so draw the 1px orbit ring as a yellow disc
+  // with the sky redrawn 1px smaller inside it
+  render.drawCircle(yellow, centerX, centerY, orbitRadius, 0, 360);
+  drawSky(orbitRadius - 1, sunriseDegrees, sunsetDegrees);
 };
 
 const drawNotches = () => {
@@ -109,12 +120,13 @@ export const draw = (evt) => {
   const sunAngle = getSunAngle(now) * rad;
   const sunCos = Math.cos(sunAngle);
   const sunSin = Math.sin(sunAngle);
+  const sunOrbitRadius = getSunOrbitRadius();
 
   render.begin();
 
-  drawBackground();
+  drawBackground(sunOrbitRadius);
   drawNotches();
-  drawSun(getSunOrbitRadius(), sunCos, sunSin);
+  drawSun(sunOrbitRadius, sunCos, sunSin);
   drawTimeAndDate(now, sunCos, sunSin);
 
   render.end();
