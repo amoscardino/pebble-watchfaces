@@ -1,0 +1,25 @@
+{
+  "name": "threads",
+  "author": "Andrew Moscardino",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "build": "pebble build",
+    "start": "pebble build && pebble install --emulator gabbro",
+    "debug": "pebble build --debug && pebble install --emulator gabbro"
+  },
+  "pebble": {
+    "displayName": "Threads",
+    "uuid": "98267cc7-1a71-489a-adb9-1589429a9620",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    }
+  }
+}
