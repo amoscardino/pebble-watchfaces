@@ -19,8 +19,15 @@ const digitHeight = 95;
 const segmentWidth = Math.floor(digitWidth / 3);
 const segmentHeight = Math.floor(digitHeight / 5);
 
+// Inset that centers each square segment within its column, and the offset of
+// a segment's center pixel from the left edge of its column
+const segmentInset = (segmentWidth - segmentHeight) / 2;
+const segmentCenter = segmentInset + Math.floor(segmentHeight / 2);
+
 const digitSpacingX = 0;
 const digitSpacingY = (segmentWidth - segmentHeight);
+
+const lineThickness = 1;
 
 // 3x5 segment representation for each digit
 const digits = {
@@ -96,6 +103,24 @@ const digits = {
   ]
 };
 
+const drawLines = () => {
+  render.origin(centerX, 0);
+
+  // Lines run through the center of each segment column, continuing the grid
+  // outward from the right and left digits
+  for (let i = 0; i < 6; i++) {
+    const x = digitSpacingX + (i * segmentWidth) + segmentCenter;
+    render.drawLine(x, 0, x, height, colorForeground, lineThickness);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const x = -digitSpacingX - digitWidth + ((2 - i) * segmentWidth) + segmentCenter;
+    render.drawLine(x, 0, x, height, colorForeground, lineThickness);
+  }
+
+  render.origin();
+};
+
 const drawDigit = (digit, x, y) => {
   render.origin(x, y);
 
@@ -104,7 +129,7 @@ const drawDigit = (digit, x, y) => {
   for (let row = 0; row < pattern.length; row++) {
     for (let col = 0; col < pattern[row].length; col++) {
       if (pattern[row][col]) {
-        render.fillRectangle(colorForeground, (col * segmentWidth) + ((segmentWidth - segmentHeight) / 2), row * segmentHeight, segmentHeight, segmentHeight);
+        render.fillRectangle(colorForeground, (col * segmentWidth) + segmentInset, row * segmentHeight, segmentHeight, segmentHeight);
       }
     }
   }
@@ -125,6 +150,8 @@ const draw = (evt) => {
   render.begin();
 
   render.fillRectangle(colorBackground, 0, 0, render.width, render.height);
+
+  drawLines();
 
   if (hoursTensDigit > 0)
     drawDigit(hoursTensDigit, centerX - digitWidth - digitSpacingX, centerY - digitHeight - digitSpacingY);
