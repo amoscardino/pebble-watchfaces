@@ -15,16 +15,11 @@ const centerY = height / 2;
 const digitWidth = 75;
 const digitHeight = 95;
 
-// Segments of each digits are squares with space between to fill the 3x5 grid
 const segmentWidth = Math.floor(digitWidth / 3);
 const segmentHeight = Math.floor(digitHeight / 5);
-
-// Inset that centers each square segment within its column, and the offset of
-// a segment's center pixel from the left edge of its column
 const segmentInset = (segmentWidth - segmentHeight) / 2;
 const segmentCenter = segmentInset + Math.floor(segmentHeight / 2);
 
-const digitSpacingX = 0;
 const digitSpacingY = (segmentWidth - segmentHeight);
 
 const lineThickness = 1;
@@ -109,12 +104,12 @@ const drawLines = () => {
   // Lines run through the center of each segment column, continuing the grid
   // outward from the right and left digits
   for (let i = 0; i < 6; i++) {
-    const x = digitSpacingX + (i * segmentWidth) + segmentCenter;
+    const x = (i * segmentWidth) + segmentCenter;
     render.drawLine(x, 0, x, height, colorForeground, lineThickness);
   }
 
   for (let i = 0; i < 6; i++) {
-    const x = -digitSpacingX - digitWidth + ((2 - i) * segmentWidth) + segmentCenter;
+    const x = -digitWidth + ((2 - i) * segmentWidth) + segmentCenter;
     render.drawLine(x, 0, x, height, colorForeground, lineThickness);
   }
 
@@ -154,11 +149,11 @@ const draw = (evt) => {
   drawLines();
 
   if (hoursTensDigit > 0)
-    drawDigit(hoursTensDigit, centerX - digitWidth - digitSpacingX, centerY - digitHeight - digitSpacingY);
+    drawDigit(hoursTensDigit, centerX - digitWidth, centerY - digitHeight - digitSpacingY);
 
-  drawDigit(hoursOnesDigit, centerX + digitSpacingX, centerY - digitHeight - digitSpacingY);
-  drawDigit(minutesTensDigit, centerX - digitWidth - digitSpacingX, centerY + digitSpacingY);
-  drawDigit(minutesOnesDigit, centerX + digitSpacingX, centerY + digitSpacingY);
+  drawDigit(hoursOnesDigit, centerX, centerY - digitHeight - digitSpacingY);
+  drawDigit(minutesTensDigit, centerX - digitWidth, centerY + digitSpacingY);
+  drawDigit(minutesOnesDigit, centerX, centerY + digitSpacingY);
 
   render.end();
 }
