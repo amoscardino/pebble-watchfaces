@@ -45,7 +45,7 @@ const drawStepRing = (now) => {
   if (!access)
     return;
 
-  const stepCount = Health.metric.get("step count") || 3465;
+  const stepCount = Health.metric.get("step count") || 0;
 
   if (!stepCount)
     return;
