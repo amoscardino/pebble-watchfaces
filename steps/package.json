@@ -3,7 +3,9 @@
   "author": "Andrew Moscardino",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "@rebble/clay": "^1.1.0"
+  },
   "scripts": {
     "build": "pebble build",
     "start": "pebble build && pebble install --emulator gabbro",
@@ -17,6 +19,12 @@
     "enableMultiJS": true,
     "targetPlatforms": [
       "gabbro"
+    ],
+    "capabilities": [
+      "configurable"
+    ],
+    "messageKeys": [
+      "GOAL"
     ],
     "watchapp": {
       "watchface": true

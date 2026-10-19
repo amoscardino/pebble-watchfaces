@@ -12,7 +12,7 @@
     "*-alpha": [
       {
         "source": "./assets/Tomorrow-Regular",
-        "size": 64,
+        "size": 72,
         "monochrome": true,
         "blocks": [
           "Basic Latin"
