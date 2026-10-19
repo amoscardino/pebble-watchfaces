@@ -6,11 +6,11 @@ Experiments for now, may release some or all to the Pebble Appstore (eventually)
 
 ## Watchfaces
 
+- `analog`
 - `binary-dial`
-- `ring-dial`
 - `solar-dial`
 - `squares`
-- `analog`
+- `steps`
 
 ## Building
 

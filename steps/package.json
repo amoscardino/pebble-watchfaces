@@ -1,17 +1,17 @@
 {
-  "name": "ring-dial",
+  "name": "steps",
   "author": "Andrew Moscardino",
   "version": "1.0.0",
   "private": true,
   "dependencies": {},
-  "scripts":{
+  "scripts": {
     "build": "pebble build",
     "start": "pebble build && pebble install --emulator gabbro",
     "debug": "pebble build --debug && pebble install --emulator gabbro"
   },
   "pebble": {
-    "displayName": "Ring Dial",
-    "uuid": "8d3be520-15a3-4922-a3a1-d9318f8af06c",
+    "displayName": "Steps",
+    "uuid": "83f2255d-ccf6-4511-99c2-b7438a958668",
     "projectType": "moddable",
     "sdkVersion": "3",
     "enableMultiJS": true,
