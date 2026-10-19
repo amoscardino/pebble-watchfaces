@@ -22,8 +22,10 @@ const green = render.makeColor(0, 255, 0);
 
 const centerX = render.width / 2;
 const centerY = render.height / 2;
+const dateTimeSpace = 4;
 const radius = render.width / 2;
-const ringThickness = 10;
+const ringThickness = 12;
+const ringBorder = 1;
 
 // TODO: Use Clay to let user set this
 const goal = 10000;
@@ -43,7 +45,7 @@ const drawStepRing = (now) => {
   if (!access)
     return;
 
-  const stepCount = Health.metric.get("step count") || 0;
+  const stepCount = Health.metric.get("step count") || 3465;
 
   if (!stepCount)
     return;
@@ -52,7 +54,8 @@ const drawStepRing = (now) => {
   const ringColor = progress <= 0.33 ? red : progress <= 0.66 ? yellow : green;
 
   render.drawCircle(ringColor, centerX, centerY, radius, 0, progress * 360);
-  render.drawCircle(black, centerX, centerY, radius - ringThickness, 0, 360);
+  render.drawCircle(white, centerX, centerY, radius - ringThickness, 0, 360);
+  render.drawCircle(black, centerX, centerY, radius - ringThickness - ringBorder, 0, 360);
 };
 
 const draw = (evt) => {
@@ -63,7 +66,9 @@ const draw = (evt) => {
   const timeStr = `${hours}:${minutes}`;
   const timeWidth = render.getTextWidth(timeStr, timeFont);
   const timeHeight = timeFont.height;
-  const dateStr = `${getDayString(now)} ${getMonthString(now)} ${now.getDate()}`;
+  const dayStr = getDayString(now);
+  const dayWidth = render.getTextWidth(dayStr, dateFont);
+  const dateStr = `${getMonthString(now)} ${now.getDate()}`;
   const dateWidth = render.getTextWidth(dateStr, dateFont);
 
   render.begin();
@@ -74,13 +79,18 @@ const draw = (evt) => {
   drawStepRing(now);
 
   // Time in the center
-  const timeX = (render.width - timeWidth) / 2;
-  const timeY = (render.height - timeHeight) / 2;
+  const timeX = centerX - (timeWidth / 2);
+  const timeY = centerY - (timeHeight / 2);
   render.drawText(timeStr, timeFont, white, timeX, timeY);
 
+  // Day above time
+  const dayX = centerX - (dayWidth / 2);
+  const dayY = timeY - dateFont.height - dateTimeSpace;
+  render.drawText(dayStr, dateFont, white, dayX, dayY);
+
   // Date below the time
-  const dateX = (render.width - dateWidth) / 2;
-  const dateY = timeY + timeHeight + 4; // 4 pixels below the time
+  const dateX = centerX - (dateWidth / 2);
+  const dateY = timeY + timeHeight + dateTimeSpace;
   render.drawText(dateStr, dateFont, white, dateX, dateY);
 
   render.end();
