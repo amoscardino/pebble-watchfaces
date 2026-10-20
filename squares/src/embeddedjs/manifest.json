@@ -5,8 +5,7 @@
   ],
   "modules": {
     "*": [
-      "./main",
-      "./dates"
+      "./main"
     ]
   },
   "resources": {
