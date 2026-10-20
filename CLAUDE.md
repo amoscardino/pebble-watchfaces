@@ -51,6 +51,7 @@ All faces follow the same structure:
 - Only call `msg.write()` after `onWritable` fires, and stop on `onSuspend` — the location proxy shares the channel and `write()` throws otherwise.
 - AppMessage integers only: send floats (lat/long) as strings and dates as Unix seconds.
 - Phone side (`pkjs/index.js`) must route events through `@moddable/pebbleproxy` (`readyReceived`, `appMessageReceived`) and reply via `moddableProxy.sendAppMessage` so it doesn't collide with proxy traffic. npm deps (e.g. `suncalc`) are bundled into pkjs.
+- The watch's `pebble/message` keeps only the latest unread message, so back-to-back messages from the phone can overwrite each other. This breaks multi-message proxy responses such as `fetch()` (dropped headers crash in `Headers`, dropped body gives `JSON.parse` "invalid value"). `steps/src/pkjs/index.js` wraps `Pebble.sendAppMessage` to pause after each ACK. Copy that into any face that uses `fetch()`.
 - Results are cached in watch `localStorage` so the dial renders correctly before a fresh lookup completes.
 
 ## SDK Documentation

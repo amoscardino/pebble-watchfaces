@@ -5,7 +5,8 @@
   ],
   "modules": {
     "*": [
-      "./main"
+      "./main",
+      "./weather"
     ]
   },
   "resources": {
@@ -20,11 +21,12 @@
       },
       {
         "source": "./assets/Tomorrow-Regular",
-        "size": 18,
+        "size": 16,
         "monochrome": true,
         "blocks": [
           "Basic Latin"
-        ]
+        ],
+        "characters": "°"
       }
     ]
   }
