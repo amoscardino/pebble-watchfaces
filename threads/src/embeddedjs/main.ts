@@ -1,3 +1,4 @@
+/// <reference types="./pebble.d.ts" />
 import Poco from "commodetto/Poco";
 
 let render = new Poco(screen);
@@ -25,71 +26,71 @@ const digitSpacingY = (segmentWidth - segmentHeight);
 const lineThickness = 1;
 
 // 3x5 segment representation for each digit
-const digits = {
-  '0': [
+const digits: Record<number, number[][]> = {
+  0: [
     [1, 1, 1],
     [1, 0, 1],
     [1, 0, 1],
     [1, 0, 1],
     [1, 1, 1],
   ],
-  '1': [
+  1: [
     [0, 1, 0],
     [1, 1, 0],
     [0, 1, 0],
     [0, 1, 0],
     [1, 1, 1],
   ],
-  '2': [
+  2: [
     [1, 1, 1],
     [0, 0, 1],
     [1, 1, 1],
     [1, 0, 0],
     [1, 1, 1],
   ],
-  '3': [
+  3: [
     [1, 1, 1],
     [0, 0, 1],
     [0, 1, 1],
     [0, 0, 1],
     [1, 1, 1],
   ],
-  '4': [
+  4: [
     [1, 0, 1],
     [1, 0, 1],
     [1, 1, 1],
     [0, 0, 1],
     [0, 0, 1],
   ],
-  '5': [
+  5: [
     [1, 1, 1],
     [1, 0, 0],
     [1, 1, 1],
     [0, 0, 1],
     [1, 1, 1],
   ],
-  '6': [
+  6: [
     [1, 1, 1],
     [1, 0, 0],
     [1, 1, 1],
     [1, 0, 1],
     [1, 1, 1],
   ],
-  '7': [
+  7: [
     [1, 1, 1],
     [0, 0, 1],
     [0, 0, 1],
     [0, 0, 1],
     [0, 0, 1],
   ],
-  '8': [
+  8: [
     [1, 1, 1],
     [1, 0, 1],
     [1, 1, 1],
     [1, 0, 1],
     [1, 1, 1],
   ],
-  '9': [
+  9: [
     [1, 1, 1],
     [1, 0, 1],
     [1, 1, 1],
@@ -116,7 +117,7 @@ const drawLines = () => {
   render.origin();
 };
 
-const drawDigit = (digit, x, y) => {
+const drawDigit = (digit: number, x: number, y: number) => {
   render.origin(x, y);
 
   const pattern = digits[digit];
@@ -133,7 +134,7 @@ const drawDigit = (digit, x, y) => {
   render.origin();
 };
 
-const draw = (evt) => {
+const draw = (evt?: TimeChangeEvent) => {
   const now = evt?.date ?? new Date();
   const hours = watch.hour12 ? (now.getHours() % 12 || 12) : now.getHours();
   const minutes = now.getMinutes();

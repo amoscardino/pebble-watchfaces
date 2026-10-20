@@ -1,10 +1,11 @@
+/// <reference types="./pebble.d.ts" />
 import Poco from "commodetto/Poco";
 import parseBMF from "commodetto/parseBMF";
 import parseRLE from "commodetto/parseRLE";
 
 let render = new Poco(screen);
 
-const getFont = (name, size) => {
+const getFont = (name: string, size: number) => {
   const font = parseBMF(new Resource(`${name}-${size}.fnt`));
   font.bitmap = parseRLE(new Resource(`${name}-${size}-alpha.bm4`));
   return font;
@@ -35,7 +36,7 @@ const colors = [
   render.makeColor(255, 0, 0), // Red
 ];
 
-const drawGroup = (value, groupStartAngle) => {
+const drawGroup = (value: number, groupStartAngle: number) => {
   for (let i = 0; i < bitsPerGroup; i++) {
     const bit = bitsPerGroup - 1 - i;
     const startAngle = groupStartAngle + groupGapAngle / 2 + i * segmentAngle + marginAngle / 2;
@@ -47,7 +48,7 @@ const drawGroup = (value, groupStartAngle) => {
   }
 };
 
-const draw = (evt) => {
+const draw = (evt?: TimeChangeEvent) => {
   const now = evt?.date ?? new Date();
   const hours = watch.hour12 ? now.getHours() % 12 || 12 : now.getHours();
   const minutes = now.getMinutes();
