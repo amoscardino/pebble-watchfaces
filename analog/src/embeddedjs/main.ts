@@ -1,3 +1,4 @@
+/// <reference types="./pebble.d.ts" />
 import Poco from "commodetto/Poco";
 
 let render = new Poco(screen);
@@ -32,23 +33,23 @@ const dialNumberOffset = 10;
 const dateFontHeight = 18;
 const dateFont = new render.Font("Gothic-Bold", dateFontHeight);
 
-const getMonthString = (date) => {
+const getMonthString = (date: Date) => {
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return monthNames[date.getMonth()];
 };
 
-const getHourAngle = (now) => ((now.getHours() % 12) + now.getMinutes() / 60) * (360 / 12) * rad;
-const getMinuteAngle = (now) => (now.getMinutes() + now.getSeconds() / 60) * (360 / 60) * rad;
+const getHourAngle = (now: Date) => ((now.getHours() % 12) + now.getMinutes() / 60) * (360 / 12) * rad;
+const getMinuteAngle = (now: Date) => (now.getMinutes() + now.getSeconds() / 60) * (360 / 60) * rad;
 
-const getDatePosition = (dateWidth, dateFontHeight, hourAngle, minuteAngle) => {
+const getDatePosition = (dateWidth: number, dateFontHeight: number, hourAngle: number, minuteAngle: number): { x: number, y: number } => {
   // Position the date on the right side of the dial by default if neither hand is between 2 and 4 o'clock
   // If that doesn't work, position to the left if neither hand is between 8 and 10 o'clock
   // If that doesn't work, position to the bottom if neither hand is between 4 and 8 o'clock
   // Finally, give up and position the date at the top of the dial
   let x, y;
 
-  const isClear = (startDeg, endDeg) => {
-    const inRange = (angle) => angle > startDeg * rad && angle < endDeg * rad;
+  const isClear = (startDeg: number, endDeg: number): boolean => {
+    const inRange = (angle: number): boolean => angle > startDeg * rad && angle < endDeg * rad;
     return !inRange(hourAngle) && !inRange(minuteAngle);
   };
 
@@ -101,21 +102,21 @@ const drawDial = () => {
   }
 };
 
-const drawHourHand = (angle) => {
+const drawHourHand = (angle: number) => {
   const x = centerX + Math.sin(angle) * hourHandLength;
   const y = centerY - Math.cos(angle) * hourHandLength;
 
   render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
 };
 
-const drawMinuteHand = (angle) => {
+const drawMinuteHand = (angle: number) => {
   const x = centerX + Math.sin(angle) * minuteHandLength;
   const y = centerY - Math.cos(angle) * minuteHandLength;
 
   render.drawLine(centerX, centerY, x, y, colorForeground, handThickness);
 };
 
-const drawDate = (now, hourAngle, minuteAngle) => {
+const drawDate = (now: Date, hourAngle: number, minuteAngle: number) => {
   const dateStr = `${getMonthString(now)} ${now.getDate()}`;
   const dateWidth = render.getTextWidth(dateStr, dateFont);
   const { x, y } = getDatePosition(dateWidth, dateFontHeight, hourAngle, minuteAngle);
@@ -126,16 +127,17 @@ const drawDate = (now, hourAngle, minuteAngle) => {
   render.drawText(dateStr, dateFont, colorBackground, x, y - 1);
 };
 
-const drawCenter = (now) => {
+const drawCenter = (now: Date) => {
   // Center is the AM/PM indicator
-  const inner = now.getHours() >= 12 ? colorForeground : colorBackground;
-  const outer = now.getHours() >= 12 ? colorBackground : colorForeground;
+  const isPM = now.getHours() >= 12;
+  const inner = isPM ? colorForeground : colorBackground;
+  const outer = isPM ? colorBackground : colorForeground;
 
   render.drawCircle(outer, centerX, centerY, centerRadius, 0, 360);
   render.drawCircle(inner, centerX, centerY, centerRadius - centerBorder, 0, 360);
 };
 
-const draw = (evt) => {
+const draw = (evt?: TimeChangeEvent) => {
   const now = evt?.date ?? new Date();
   const hourAngle = getHourAngle(now);
   const minuteAngle = getMinuteAngle(now);
@@ -149,6 +151,6 @@ const draw = (evt) => {
   drawCenter(now);
 
   render.end();
-}
+};
 
 watch.addEventListener('minutechange', draw);

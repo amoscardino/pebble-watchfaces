@@ -3,7 +3,6 @@
   "author": "Andrew Moscardino",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {},
   "scripts": {
     "build": "pebble build",
     "start": "pebble build && pebble install --emulator gabbro",
@@ -21,5 +20,8 @@
     "watchapp": {
       "watchface": true
     }
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }
