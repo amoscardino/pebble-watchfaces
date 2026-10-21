@@ -70,3 +70,5 @@ Temporary Items
 # Ignore all local history of files
 .history
 .ionide
+# Per-machine symlink to the Pebble SDK (created by link-sdk.sh)
+.pebble-sdk

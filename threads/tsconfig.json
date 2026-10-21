@@ -16,73 +16,73 @@
     "resolveJsonModule": true,
     "paths": {
       "*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/*",
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/ble/*"
+        "../.pebble-sdk/toolchain/moddable/typings/*",
+        "../.pebble-sdk/toolchain/moddable/typings/ble/*"
       ],
       "commodetto/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/commodetto/*"
+        "../.pebble-sdk/toolchain/moddable/typings/commodetto/*"
       ],
       "piu/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/*"
+        "../.pebble-sdk/toolchain/moddable/typings/piu/*"
       ],
       "text/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/text/*"
+        "../.pebble-sdk/toolchain/moddable/typings/text/*"
       ],
       "embedded:io/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded_io/*"
+        "../.pebble-sdk/toolchain/moddable/typings/embedded_io/*"
       ],
       "embedded:storage/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded/storage/*"
+        "../.pebble-sdk/toolchain/moddable/typings/embedded/storage/*"
       ],
       "embedded:sensor/Accelerometer": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/accelerometer"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/accelerometer"
       ],
       "embedded:sensor/Battery": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/battery"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/battery"
       ],
       "embedded:sensor/Compass": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/compass"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/compass"
       ],
       "embedded:sensor/Location": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/location"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/location"
       ],
       "embedded:provider/builtin": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/device"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/device"
       ],
       "embedded:*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded/*"
+        "../.pebble-sdk/toolchain/moddable/typings/embedded/*"
       ],
       "pebble/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/*"
+        "../.pebble-sdk/toolchain/moddable/typings/pebble/*"
       ],
       "headers": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/headers"
+        "../.pebble-sdk/toolchain/moddable/typings/web/headers"
       ],
       "fetch": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/fetch"
+        "../.pebble-sdk/toolchain/moddable/typings/web/fetch"
       ],
       "url": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/url"
+        "../.pebble-sdk/toolchain/moddable/typings/web/url"
       ],
       "webstorage": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/webstorage"
+        "../.pebble-sdk/toolchain/moddable/typings/web/webstorage"
       ],
       "structuredClone": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/structuredClone"
+        "../.pebble-sdk/toolchain/moddable/typings/web/structuredClone"
       ],
       "web/*": [
-        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/*"
+        "../.pebble-sdk/toolchain/moddable/typings/web/*"
       ]
     },
     "types": [
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/global",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/piu",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/poco",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/easing",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/MC",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/MC-types",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/xs/includes/xs",
-      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/global"
+      "../.pebble-sdk/toolchain/moddable/typings/pebble/global",
+      "../.pebble-sdk/toolchain/moddable/typings/pebble/piu",
+      "../.pebble-sdk/toolchain/moddable/typings/pebble/poco",
+      "../.pebble-sdk/toolchain/moddable/typings/easing",
+      "../.pebble-sdk/toolchain/moddable/typings/piu/MC",
+      "../.pebble-sdk/toolchain/moddable/typings/piu/MC-types",
+      "../.pebble-sdk/toolchain/moddable/xs/includes/xs",
+      "../.pebble-sdk/toolchain/moddable/typings/global"
     ]
   },
   "include": [
