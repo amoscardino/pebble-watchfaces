@@ -8,30 +8,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-A collection of independent Pebble watchfaces written in embedded JavaScript using Pebble Alloy (Moddable XS runtime, `projectType: "moddable"`). Each top-level directory (`analog`, `binary-dial`, `ring-dial`, `solar-dial`, `squares`) is a self-contained Pebble project with its own `package.json`, `wscript`, and build output. There is no root-level package, shared library, linter, or test suite.
+A collection of independent Pebble watchfaces written in TypeScript using Pebble Alloy (Moddable XS runtime, `projectType: "moddable"`). Each top-level directory is a self-contained Pebble project with its own `package.json`, `tsconfig.json`, `wscript`, and build output. There is no root-level package, shared library, linter, or test suite.
 
 ## Commands
 
-Run from inside a watchface directory (requires the `pebble` CLI on PATH):
+Run from inside a watchface directory (requires the `pebble` CLI on PATH, and `npm install` first for faces with npm dependencies):
 
 ```sh
-npm run build    # pebble build
+npm run build    # pebble build (compiles the .ts sources)
 npm run start    # build + install to emulator(s)
 npm run debug    # build with --debug (enables xsbug JS debugger) + install
+npx tsc          # optional type check only (noEmit); the build does not use this tsconfig
 ```
 
-Most faces target only **gabbro** (Pebble Round 2). `squares` also targets **emery** (Pebble Time 2) and has per-platform scripts instead of `debug`: `start:time`, `start:round`, `debug:time`, `debug:round`.
+Most faces target only **gabbro** (Pebble Round 2). Faces that also target other platforms (e.g. **emery**, Pebble Time 2) use per-platform scripts such as `start:time` / `start:round` and `debug:time` / `debug:round`; check the face's `package.json`.
 
 ## Project layout (per watchface)
 
-- `src/embeddedjs/main.js` — the watchface itself; runs on the watch in the XS VM. All rendering logic lives here.
-- `src/embeddedjs/manifest.json` — Moddable manifest. Every JS module must be listed under `modules`, and custom fonts must be declared under `resources` (`*-alpha`) with each size used.
-- `src/pkjs/index.js` — phone-side PebbleKit JS. Empty or trivial unless the face needs phone services.
+- `src/embeddedjs/main.ts` — the watchface entry point; runs on the watch in the XS VM. Larger faces split logic into additional modules alongside it.
+- `src/embeddedjs/manifest.json` — Moddable manifest. It includes `$(MODDABLE)/examples/manifest_mod.json` and `manifest_typings.json` (the latter makes the Pebble build compile TypeScript). Every module must be listed under `modules` by extensionless path (`"./main"`), and custom fonts must be declared under `resources` (`*-alpha`) with each size used.
+- `src/embeddedjs/pebble.d.ts` — fills gaps in the SDK's Moddable typings (e.g. `Screen.round`). Identical across faces; referenced at the top of each module with `/// <reference types="./pebble.d.ts" />`. Add missing SDK types here rather than casting.
+- `tsconfig.json` — editor-only config mirroring the one the Pebble build generates. Its `paths`/`types` point at the SDK typings through a relative path to `~/Library/Application Support/Pebble SDK/SDKs/<version>/...`, so update every face's copy if the SDK version changes. Identical across faces.
+- `src/pkjs/index.js` — phone-side PebbleKit JS, plain JavaScript (CommonJS `require`). Empty or trivial unless the face needs phone services.
 - `src/c/mdbl.c` — boilerplate C entry point that creates the Moddable machine (debug flag under `PBL_DEBUG`). Identical across faces; don't normally edit.
 - `wscript` — stock Pebble waf build script; identical across faces.
-- `package.json` `pebble` block — display name, UUID, target platforms, capabilities, and `messageKeys`.
+- `package.json` — `typescript` as a devDependency; the `pebble` block holds display name, UUID, target platforms, capabilities, and `messageKeys`.
 
-`dates.js` (day/month abbreviations) is duplicated in `squares` and `solar-dial`; there is no cross-project sharing mechanism, so copy rather than import across faces.
+There is no cross-project sharing mechanism, so copy rather than import across faces (e.g. `pebble.d.ts`, `tsconfig.json`, helpers like the font loader). When starting a new face, copy an existing one and give it a new UUID.
 
 ## Rendering patterns
 
@@ -41,18 +44,18 @@ All faces follow the same structure:
 - A `draw(evt)` function wrapped in `render.begin()` / `render.end()`, registered with `watch.addEventListener('minutechange', draw)`. Use `evt?.date` for the current time.
 - Respect `watch.hour12` for 12/24-hour formatting; `screen.round` distinguishes round vs. rectangular displays.
 - Built-in system fonts: `new render.Font("Gothic-Regular", 14)` etc.
-- Custom TTF fonts (in `src/embeddedjs/assets/`) are declared in the manifest and loaded with `parseBMF(new Resource(`${name}-${size}.fnt`))` plus `parseRLE(new Resource(`${name}-${size}-alpha.bm4`))` assigned to `font.bitmap` (see `squares/main.js`).
+- Custom TTF fonts (in `src/embeddedjs/assets/`) are declared in the manifest and loaded with a `getFont(name, size)` helper: `parseBMF(new Resource(`${name}-${size}.fnt`))` plus `parseRLE(new Resource(`${name}-${size}-alpha.bm4`))` assigned to `font.bitmap`. Non-ASCII glyphs need a `characters` entry on the resource (e.g. `"°"`).
+- For `pebble/health`, check `Health.metric.accessible(...)` before querying.
 
-## Watch ↔ phone communication (solar-dial)
+## Watch ↔ phone communication
 
-`solar-dial` is the only face with a phone component and is the reference for this pattern:
-
-- Watch side gets GPS via `embedded:sensor/Location` (requires `"capabilities": ["location"]`) and talks to the phone via `pebble/message`. Message keys must match `messageKeys` in `package.json`.
+- Location comes from `embedded:sensor/Location` (requires `"capabilities": ["location"]`). Watch ↔ phone messages use `pebble/message`; keys must match `messageKeys` in `package.json`.
 - Only call `msg.write()` after `onWritable` fires, and stop on `onSuspend` — the location proxy shares the channel and `write()` throws otherwise.
 - AppMessage integers only: send floats (lat/long) as strings and dates as Unix seconds.
-- Phone side (`pkjs/index.js`) must route events through `@moddable/pebbleproxy` (`readyReceived`, `appMessageReceived`) and reply via `moddableProxy.sendAppMessage` so it doesn't collide with proxy traffic. npm deps (e.g. `suncalc`) are bundled into pkjs.
-- The watch's `pebble/message` keeps only the latest unread message, so back-to-back messages from the phone can overwrite each other. This breaks multi-message proxy responses such as `fetch()` (dropped headers crash in `Headers`, dropped body gives `JSON.parse` "invalid value"). `steps/src/pkjs/index.js` wraps `Pebble.sendAppMessage` to pause after each ACK. Copy that into any face that uses `fetch()`.
-- Results are cached in watch `localStorage` so the dial renders correctly before a fresh lookup completes.
+- Phone side (`pkjs/index.js`) must route events through `@moddable/pebbleproxy` (`readyReceived`, `appMessageReceived`) and reply via `moddableProxy.sendAppMessage` so it doesn't collide with proxy traffic. npm deps are bundled into pkjs.
+- `fetch()` on the watch is carried through the phone by the proxy. The watch's `pebble/message` keeps only the latest unread message, so back-to-back messages from the phone can overwrite each other. This breaks multi-message proxy responses such as `fetch()` (dropped headers crash in `Headers`, dropped body gives `JSON.parse` "invalid value"). Any face using `fetch()` must wrap `Pebble.sendAppMessage` in pkjs to pause after each ACK (copy the wrapper from an existing face that does this).
+- User settings use Clay (`@rebble/clay`, `src/pkjs/config.js`, `"configurable"` capability, one message key per setting).
+- Cache results and settings in watch `localStorage` so the face renders correctly before a fresh lookup completes.
 
 ## SDK Documentation
 
