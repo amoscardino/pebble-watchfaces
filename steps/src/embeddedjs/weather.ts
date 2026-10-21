@@ -1,3 +1,4 @@
+/// <reference types="./pebble.d.ts" />
 import Location from "embedded:sensor/Location";
 
 // Don't show weather older than this; better blank than misleading
@@ -6,7 +7,7 @@ export const reconnectLookupInterval = 30 * 60 * 1000; // 30 minutes in millisec
 
 const loadCachedWeather = () => {
   try {
-    return JSON.parse(localStorage.getItem("weather"));
+    return JSON.parse(localStorage.getItem("weather") as string);
   } catch {
     return undefined;
   }
@@ -14,11 +15,11 @@ const loadCachedWeather = () => {
 
 // Restore the last reading so the face shows weather before a fresh lookup completes
 let weather = loadCachedWeather();
-let location;
+let location: Location | undefined;
 let lastLookup = 0;
 let onChange = () => { };
 
-const getCondition = (code, isDay) => {
+const getCondition = (code: number, isDay: number) => {
   if (code === 0) return isDay ? "Sunny" : "Clear";
   if (code <= 2) return "Partly Cloudy";
   if (code === 3) return "Cloudy";
@@ -32,15 +33,15 @@ const getCondition = (code, isDay) => {
   return "Unknown";
 };
 
-const fetchWeather = async (latitude, longitude) => {
+const fetchWeather = async (latitude: number, longitude: number) => {
   try {
     const url = new URL("https://api.open-meteo.com/v1/forecast");
-    url.search = new URLSearchParams({
+    url.search = (new URLSearchParams({
       latitude,
       longitude,
       current: "temperature_2m,weather_code,is_day",
       temperature_unit: "fahrenheit"
-    });
+    })).toString();
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -77,15 +78,17 @@ export const requestWeather = () => {
 
   location = new Location({
     onSample() {
-      const { latitude, longitude } = this.sample();
+      const { latitude, longitude } = location?.sample() ?? {};
 
-      this.close();
+      location?.close();
       location = undefined;
 
-      fetchWeather(latitude, longitude);
+      if (latitude !== undefined && longitude !== undefined) {
+        fetchWeather(latitude, longitude);
+      }
     },
     onError() {
-      this.close();
+      location?.close();
       location = undefined;
     }
   });
@@ -97,7 +100,7 @@ export const requestWeather = () => {
   });
 };
 
-export const requestWeatherIfStale = (interval) => {
+export const requestWeatherIfStale = (interval: number) => {
   if (Date.now() - lastLookup >= interval) {
     requestWeather();
   }
@@ -117,6 +120,6 @@ export const getWeatherText = () => {
 /**
  * @param {() => void} callback Called whenever new weather arrives
  */
-export const onWeatherChange = (callback) => {
+export const onWeatherChange = (callback: () => void) => {
   onChange = callback;
 };

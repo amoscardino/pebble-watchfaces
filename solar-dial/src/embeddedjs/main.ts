@@ -10,11 +10,13 @@ watch.addEventListener('daychange', requestLocation);
 
 watch.addEventListener('hourchange', (evt) => {
   // At midnight hourchange fires just before daychange, which does its own lookup
-  if (evt.date.getHours())
+  if (evt.date.getHours()) {
     requestLocationIfStale(periodicLookupInterval);
+  }
 });
 
 watch.addEventListener('connected', () => {
-  if (watch.connected.pebblekit)
+  if (watch.connected.pebblekit) {
     requestLocationIfStale(reconnectLookupInterval);
+  }
 });

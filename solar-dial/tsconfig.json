@@ -1,0 +1,91 @@
+// Editor-only config. The Pebble build generates its own tsconfig from
+// src/embeddedjs/manifest.json (via manifest_typings.json); this mirrors it so
+// the IDE can resolve Moddable modules and Pebble globals.
+{
+  "compilerOptions": {
+    "target": "es2025",
+    "lib": [
+      "es2025",
+      "esnext.disposable"
+    ],
+    "module": "preserve",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/*",
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/ble/*"
+      ],
+      "commodetto/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/commodetto/*"
+      ],
+      "piu/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/*"
+      ],
+      "text/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/text/*"
+      ],
+      "embedded:io/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded_io/*"
+      ],
+      "embedded:storage/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded/storage/*"
+      ],
+      "embedded:sensor/Accelerometer": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/accelerometer"
+      ],
+      "embedded:sensor/Battery": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/battery"
+      ],
+      "embedded:sensor/Compass": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/compass"
+      ],
+      "embedded:sensor/Location": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/location"
+      ],
+      "embedded:provider/builtin": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/device"
+      ],
+      "embedded:*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/embedded/*"
+      ],
+      "pebble/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/*"
+      ],
+      "headers": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/headers"
+      ],
+      "fetch": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/fetch"
+      ],
+      "url": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/url"
+      ],
+      "webstorage": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/webstorage"
+      ],
+      "structuredClone": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/structuredClone"
+      ],
+      "web/*": [
+        "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/web/*"
+      ]
+    },
+    "types": [
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/global",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/piu",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/pebble/poco",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/easing",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/MC",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/piu/MC-types",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/xs/includes/xs",
+      "../../../Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/moddable/typings/global"
+    ]
+  },
+  "include": [
+    "src/embeddedjs/**/*.ts"
+  ]
+}

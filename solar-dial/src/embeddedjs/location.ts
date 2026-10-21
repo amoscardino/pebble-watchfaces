@@ -6,7 +6,7 @@ export const reconnectLookupInterval = 60 * 60 * 1000; // 1 hour in milliseconds
 // Periodic recheck to catch travel while connected (e.g. driving)
 export const periodicLookupInterval = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 
-let location;
+let location: Location | undefined;
 let lastLocationRequest = 0;
 
 /**
@@ -24,15 +24,15 @@ export const requestLocation = () => {
 
   location = new Location({
     onSample() {
-      const { latitude, longitude } = this.sample();
+      const { latitude, longitude } = location?.sample() || { latitude: 0, longitude: 0 };
 
-      this.close();
+      location?.close();
       location = undefined;
 
       requestSunTimes(latitude, longitude);
     },
     onError() {
-      this.close();
+      location?.close();
       location = undefined;
     }
   });
@@ -44,7 +44,7 @@ export const requestLocation = () => {
   });
 };
 
-export const requestLocationIfStale = (interval) => {
+export const requestLocationIfStale = (interval: number) => {
   if (Date.now() - lastLocationRequest >= interval) {
     requestLocation();
   }

@@ -5,12 +5,12 @@ import { getSunAngle } from "./sunAngle";
 const positionTolerance = 0.1;
 
 // Restore the last known sunrise/sunset angles so the dial is right before a fresh lookup completes
-const loadCachedNumber = (key, fallback) => {
-  const value = parseFloat(localStorage.getItem(key));
+const loadCachedNumber = (key: string, fallback: number): number => {
+  const value = Number(localStorage.getItem(key));
   return Number.isFinite(value) ? value : fallback;
 };
 
-const setCachedDegrees = (key, value) => {
+const setCachedDegrees = (key: string, value: number) => {
   if (localStorage.getItem(key) !== String(value)) {
     localStorage.setItem(key, String(value));
   }
@@ -20,21 +20,27 @@ let sunriseDegrees = loadCachedNumber("sunriseDegrees", -90);
 let sunsetDegrees = loadCachedNumber("sunsetDegrees", 90);
 
 // The sun's altitude at solar noon in degrees; undefined until the first lookup
-let noonAltitude = loadCachedNumber("noonAltitude", undefined);
+let noonAltitude = loadCachedNumber("noonAltitude", 0);
 
 let lookupDay = localStorage.getItem("lookupDay");
-let lookupLat = loadCachedNumber("lookupLat", NaN);
-let lookupLong = loadCachedNumber("lookupLong", NaN);
+let lookupLat = loadCachedNumber("lookupLat", 0);
+let lookupLong = loadCachedNumber("lookupLong", 0);
 
 let onChange = () => { };
 
 // The request waiting to be sent (or awaiting a reply); recorded as the last lookup once the reply arrives
-let pendingSunRequest;
-let sentSunRequest;
+interface SunRequest {
+  lat: number;
+  long: number;
+  date: Date;
+  day: string;
+}
+let pendingSunRequest: SunRequest | undefined;
+let sentSunRequest: SunRequest | undefined;
 // Only write when the channel has been handed to us; write() throws otherwise
 let canWrite = false;
 
-const sendSunRequest = (msg) => {
+const sendSunRequest = (msg: Message) => {
   if (!pendingSunRequest || !canWrite) {
     return;
   }
@@ -42,7 +48,7 @@ const sendSunRequest = (msg) => {
   const { lat, long, date } = pendingSunRequest;
 
   // Numbers are sent as integers, so lat/long go as strings and time as seconds
-  msg.write(new Map([
+  msg.write(new Map<string, string | number>([
     ["LAT", String(lat)],
     ["LONG", String(long)],
     ["NOW", Math.floor(date.getTime() / 1000)]
@@ -55,20 +61,20 @@ const sendSunRequest = (msg) => {
 const message = new Message({
   keys: ["LAT", "LONG", "NOW", "SUNRISE", "SUNSET", "NOON_ALTITUDE"],
   onReadable() {
-    const msg = this.read();
+    const msg = message?.read();
 
     if (!msg.has("SUNRISE")) {
       return;
     }
 
-    sunriseDegrees = getSunAngle(new Date(msg.get("SUNRISE") * 1000)) + 90;
-    sunsetDegrees = getSunAngle(new Date(msg.get("SUNSET") * 1000)) + 90;
+    sunriseDegrees = getSunAngle(new Date(Number(msg.get("SUNRISE")) * 1000)) + 90;
+    sunsetDegrees = getSunAngle(new Date(Number(msg.get("SUNSET")) * 1000)) + 90;
 
     setCachedDegrees("sunriseDegrees", sunriseDegrees);
     setCachedDegrees("sunsetDegrees", sunsetDegrees);
 
     if (msg.has("NOON_ALTITUDE")) {
-      noonAltitude = msg.get("NOON_ALTITUDE");
+      noonAltitude = Number(msg.get("NOON_ALTITUDE"));
       setCachedDegrees("noonAltitude", noonAltitude);
     }
 
@@ -85,7 +91,7 @@ const message = new Message({
   },
   onWritable() {
     canWrite = true;
-    sendSunRequest(this);
+    sendSunRequest(message);
   },
   onSuspend() {
     // Another Message instance (e.g. the location proxy) took the channel
@@ -103,25 +109,22 @@ export const getDaylightArc = () => ({ sunriseDegrees, sunsetDegrees });
  */
 export const getNoonAltitude = () => noonAltitude;
 
-/**
- * @param {() => void} callback Called whenever new sunrise/sunset times arrive from the phone
- */
-export const onSunTimesChange = (callback) => {
+export const onSunTimesChange = (callback: () => void) => {
   onChange = callback;
 };
 
 /**
  * Asks the phone for today's sunrise/sunset at this position, unless the last lookup already covers it.
  */
-export const requestSunTimes = (lat, long) => {
+export const requestSunTimes = (lat: number, long: number) => {
   const date = new Date();
   const day = date.toDateString();
 
   // Always look up when there's no noon altitude yet (e.g. cached from before it was sent)
   const withinTolerance = noonAltitude !== undefined
     && day === lookupDay
-    && Math.abs(lat - lookupLat) < positionTolerance
-    && Math.abs(long - lookupLong) < positionTolerance;
+    && Math.abs(lat - (lookupLat ?? 0)) < positionTolerance
+    && Math.abs(long - (lookupLong ?? 0)) < positionTolerance;
 
   if (withinTolerance) {
     return;

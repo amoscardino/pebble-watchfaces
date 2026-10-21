@@ -35,5 +35,8 @@
       "SUNSET",
       "NOON_ALTITUDE"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }

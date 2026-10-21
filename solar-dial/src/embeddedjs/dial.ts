@@ -31,7 +31,8 @@ const horizonOrbitRadius = radius - (sunRadius + (notchLength * 2) + 2);
 const zenithOrbitRadius = (timeCircleRadius / 2) + sunRadius + 4;
 
 // Notches never move, so compute their endpoints once
-const notches = [];
+interface Notch { x1: number; y1: number; x2: number; y2: number; }
+const notches: Notch[] = [];
 for (let i = 0, numberOfNotches = 24; i < numberOfNotches; i++) {
   const angle = (i * 360 / numberOfNotches) * rad;
   const length = i % 2 === 0 ? notchLength * 2 : notchLength;
@@ -46,12 +47,12 @@ for (let i = 0, numberOfNotches = 24; i < numberOfNotches; i++) {
   });
 }
 
-const drawSky = (r, sunriseDegrees, sunsetDegrees) => {
+const drawSky = (r: number, sunriseDegrees: number, sunsetDegrees: number) => {
   render.drawCircle(black, centerX, centerY, r, 0, 360);
   render.drawCircle(blue, centerX, centerY, r, sunriseDegrees, sunsetDegrees);
 };
 
-const drawBackground = (sunOrbitRadius) => {
+const drawBackground = (sunOrbitRadius: number) => {
   const { sunriseDegrees, sunsetDegrees } = getDaylightArc();
   const orbitRadius = Math.round(sunOrbitRadius);
 
@@ -81,14 +82,14 @@ const getSunOrbitRadius = () => {
   return horizonOrbitRadius - (horizonOrbitRadius - zenithOrbitRadius) * Math.min(noonAltitude, 90) / 90;
 };
 
-const drawSun = (sunOrbitRadius, sunCos, sunSin) => {
+const drawSun = (sunOrbitRadius: number, sunCos: number, sunSin: number) => {
   const sunX = centerX + sunOrbitRadius * sunCos;
   const sunY = centerY + sunOrbitRadius * sunSin;
 
   render.drawCircle(yellow, sunX, sunY, sunRadius, 0, 360);
 };
 
-const drawTimeAndDate = (now, sunCos, sunSin) => {
+const drawTimeAndDate = (now: Date, sunCos: number, sunSin: number) => {
   // Opposite the sun: cos/sin of (angle + 180°) is just the negation
   const timeCircleX = centerX - (timeCircleRadius / 2) * sunCos;
   const timeCircleY = centerY - (timeCircleRadius / 2) * sunSin;
@@ -113,7 +114,7 @@ const drawTimeAndDate = (now, sunCos, sunSin) => {
 /**
  * Redraws the whole dial. Called without an event, it reuses the last time drawn.
  */
-export const draw = (evt) => {
+export const draw = (evt?:TimeChangeEvent) => {
   const now = evt?.date || lastDate;
   lastDate = now;
 
