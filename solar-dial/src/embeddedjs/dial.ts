@@ -1,7 +1,6 @@
 import Poco from "commodetto/Poco";
-import { getMonthString, getDayString } from "./dates";
-import { rad, getSunAngle } from "./sunAngle";
-import { getDaylightArc, getNoonAltitude } from "./sunTimes";
+import { getSunAngle } from "./sun";
+import { getDaylightArc, getNoonAltitude } from "./sun";
 
 const render = new Poco(screen);
 
@@ -27,14 +26,15 @@ const timeCircleRadius = render.getTextWidth("00:00", timeFont) / 2;
 const sunRadius = 10;
 const notchLength = 5;
 const notchThickness = 2;
-const horizonOrbitRadius = radius - (sunRadius + (notchLength * 2) + 2);
-const zenithOrbitRadius = (timeCircleRadius / 2) + sunRadius + 4;
+// A higher noon sun sits further out, so summer orbits near the edge and winter near the center
+const outerOrbitRadius = radius - (sunRadius + (notchLength * 2) + 2);
+const innerOrbitRadius = (timeCircleRadius / 2) + sunRadius + 4;
 
 // Notches never move, so compute their endpoints once
 interface Notch { x1: number; y1: number; x2: number; y2: number; }
 const notches: Notch[] = [];
 for (let i = 0, numberOfNotches = 24; i < numberOfNotches; i++) {
-  const angle = (i * 360 / numberOfNotches) * rad;
+  const angle = (i * 360 / numberOfNotches) * (Math.PI / 180);
   const length = i % 2 === 0 ? notchLength * 2 : notchLength;
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
@@ -46,6 +46,12 @@ for (let i = 0, numberOfNotches = 24; i < numberOfNotches; i++) {
     y2: centerY + centerY * sin
   });
 }
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const getMonthString = (date: Date) => monthNames[date.getMonth()];
+const getDayString = (date: Date) => dayNames[date.getDay()];
 
 const drawSky = (r: number, sunriseDegrees: number, sunsetDegrees: number) => {
   render.drawCircle(black, centerX, centerY, r, 0, 360);
@@ -74,12 +80,12 @@ const drawNotches = () => {
 const getSunOrbitRadius = () => {
   const noonAltitude = getNoonAltitude();
 
-  // Without a lookup yet (or with the sun never rising), keep it on the horizon orbit
+  // Without a lookup yet (or with the sun never rising), keep it on the inner orbit
   if (noonAltitude === undefined || noonAltitude <= 0) {
-    return horizonOrbitRadius;
+    return innerOrbitRadius;
   }
 
-  return horizonOrbitRadius - (horizonOrbitRadius - zenithOrbitRadius) * Math.min(noonAltitude, 90) / 90;
+  return innerOrbitRadius + (outerOrbitRadius - innerOrbitRadius) * Math.min(noonAltitude, 90) / 90;
 };
 
 const drawSun = (sunOrbitRadius: number, sunCos: number, sunSin: number) => {
@@ -90,6 +96,7 @@ const drawSun = (sunOrbitRadius: number, sunCos: number, sunSin: number) => {
 };
 
 const drawTimeAndDate = (now: Date, sunCos: number, sunSin: number) => {
+
   // Opposite the sun: cos/sin of (angle + 180°) is just the negation
   const timeCircleX = centerX - (timeCircleRadius / 2) * sunCos;
   const timeCircleY = centerY - (timeCircleRadius / 2) * sunSin;
@@ -114,11 +121,11 @@ const drawTimeAndDate = (now: Date, sunCos: number, sunSin: number) => {
 /**
  * Redraws the whole dial. Called without an event, it reuses the last time drawn.
  */
-export const draw = (evt?:TimeChangeEvent) => {
+export const draw = (evt?: TimeChangeEvent) => {
   const now = evt?.date || lastDate;
   lastDate = now;
 
-  const sunAngle = getSunAngle(now) * rad;
+  const sunAngle = getSunAngle(now) * (Math.PI / 180);
   const sunCos = Math.cos(sunAngle);
   const sunSin = Math.sin(sunAngle);
   const sunOrbitRadius = getSunOrbitRadius();

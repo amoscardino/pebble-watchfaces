@@ -1,5 +1,4 @@
 import Message from "pebble/message";
-import { getSunAngle } from "./sunAngle";
 
 // Skip the phone lookup when the day and position haven't changed (~0.1° is ~11km, well under a minute of sun time)
 const positionTolerance = 0.1;
@@ -98,6 +97,14 @@ const message = new Message({
     canWrite = false;
   }
 });
+
+export const getSunAngle = (date: Date) => {
+  const elapsedMinutes = date.getHours() * 60 + date.getMinutes();
+  const totalMinutes = 24 * 60;
+  const sunAngleDegrees = (elapsedMinutes / totalMinutes) * 360 + 90;
+
+  return sunAngleDegrees;
+};
 
 /**
  * @returns Start and end angles of the daylight arc, for drawCircle

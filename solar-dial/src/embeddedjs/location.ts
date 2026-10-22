@@ -1,5 +1,5 @@
 import Location from "embedded:sensor/Location";
-import { requestSunTimes } from "./sunTimes";
+import { requestSunTimes } from "./sun";
 
 // Throttles extra lookups so a flaky Bluetooth link doesn't hammer location
 export const reconnectLookupInterval = 60 * 60 * 1000; // 1 hour in milliseconds

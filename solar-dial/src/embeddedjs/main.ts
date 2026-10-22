@@ -1,5 +1,5 @@
 import { draw } from "./dial";
-import { onSunTimesChange } from "./sunTimes";
+import { onSunTimesChange } from "./sun";
 import { requestLocation, requestLocationIfStale, reconnectLookupInterval, periodicLookupInterval } from "./location";
 
 // Fully refresh the display after updating sunrise and sunset times
